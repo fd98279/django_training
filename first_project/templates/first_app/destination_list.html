@@ -1,0 +1,22 @@
+<h1>Destinations</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dest in object_list %}
+        <tr>
+            <td>{{ dest.name }}</td>
+            <td>
+                <a href="{% url 'destination_detail'  dest.id  %}">details</a>
+                <a href="{% url 'destination_update'  dest.id  %}">edit</a>
+                <a href="{% url 'destination_delete'  dest.id  %}">delete</a>
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
