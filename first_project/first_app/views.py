@@ -7,6 +7,11 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.forms import ModelForm
 from django.shortcuts import render, redirect, get_object_or_404
+from django import forms
+from rest_framework import generics
+from .serializers import DRFDestinationSerializer
+
+
 
 # Create your views here.
 
@@ -79,3 +84,47 @@ def Destination_delete(request, pk, template_name='first_app/destination_confirm
         Destination.delete()
         return redirect('destination_list1')
     return render(request, template_name, {'object':Destination})
+
+
+#DataFlair #Custom_Validator
+def check_size(value):
+  if len(value) < 6:
+    raise forms.ValidationError("the Password is too short")
+
+#DataFlair #Form
+class SignUp(forms.Form):
+    first_name = forms.CharField(initial = 'First Name', )
+    last_name = forms.CharField(required = False)
+    email = forms.EmailField(help_text = 'write your email', required = False)
+    Address = forms.CharField(required = False, )
+    Technology = forms.CharField(initial = 'Django', disabled = True)
+    age = forms.IntegerField(required = False, )
+    password = forms.CharField(widget = forms.PasswordInput, validators = [check_size, ])
+    re_password = forms.CharField(widget = forms.PasswordInput, required = False)
+    #Validation #DataFlair
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        if len(password) < 4:
+            raise forms.ValidationError("password is too short")
+        return password
+
+#DataFlair #Form #View Functions
+#DataFlair #Form #View Functions
+def regform(request):
+    form = SignUp()
+    if request.method == 'POST':
+        form = SignUp(request.POST)
+        html = 'we have recieved this form again'
+        if form.is_valid():
+            html = html + "The Form is Valid"
+    else:
+        html = 'welcome for first time'
+    return render(request, 'signup.html', {'html': html, 'form': form})
+
+class API_objects(generics.ListCreateAPIView):
+    queryset = Destination.objects.all()
+    serializer_class = DRFDestinationSerializer
+
+class API_objects_details(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Destination.objects.all()
+    serializer_class = DRFDestinationSerializer

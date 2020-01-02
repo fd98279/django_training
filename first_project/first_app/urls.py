@@ -20,4 +20,11 @@ urlpatterns = [
     path('destinationscreate', views.Destination_create, name='destination_new1'),
     path('destinationsedit/<int:pk>', views.Destination_update, name='destination_edit1'),
     path('destinationsdelete/<int:pk>', views.Destination_delete, name='destination_delete1'),
+
+    # Forms register
+    path('register', views.regform, name = 'registration form'),
+
+    # DRF
+    path('drf/', views.API_objects.as_view()),
+    path('drf/<int:pk>/', views.API_objects_details.as_view()),
 ]
